@@ -212,6 +212,7 @@ def qflx_convert_to_lhflx_approxi(var):
     # Multiply by the latent heat of condensation/vaporization (in J/kg)
     # kg/((m^2)*s) * J/kg = J/((m^2)*s) = (W*s)/((m^2)*s) = W/(m^2)
     var.units = "W/m2"
+    var.long_name = "Surface latent heat flux"
     return var * 2.5e6
 
 
@@ -1545,7 +1546,23 @@ derived_variables = {
             ),
         ]
     ),
-    "PRECC": OrderedDict([(("prc",), rename)]),
+    "PRECC": OrderedDict(
+        [
+            (
+                ("PRECC",),
+                lambda prc: convert_units(rename(prc), target_units="mm/day"),
+            ),
+            (("prc",), rename),
+        ]
+    ),
+    "PRECL": OrderedDict(
+        [
+            (
+                ("PRECL",),
+                lambda prc: convert_units(rename(prc), target_units="mm/day"),
+            ),
+        ]
+    ),
     "TAUX": OrderedDict(
         [
             (("tauu",), lambda tauu: -tauu),
