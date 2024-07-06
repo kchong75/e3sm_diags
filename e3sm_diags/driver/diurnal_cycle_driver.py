@@ -89,6 +89,7 @@ def run_diag(parameter: DiurnalCycleParameter) -> DiurnalCycleParameter:
                     ref_maxtime,
                     ref_amplitude,
                     parameter,
+                    #test.units,
                 )
                 utils.general.save_ncfiles(
                     parameter.current_set,
