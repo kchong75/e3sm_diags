@@ -64,7 +64,7 @@ def determine_tick_step(degrees_covered):
         return 1
 
 
-def plot_panel(n, fig, proj, var, amp, amp_ref, title, parameter):
+def plot_panel(n, fig, proj, var, amp, amp_ref, title, parameter,units):
     normalize_test_amp = parameter.normalize_test_amp
     specified_max_amp = parameter.normalize_amp_int
 
@@ -81,7 +81,7 @@ def plot_panel(n, fig, proj, var, amp, amp_ref, title, parameter):
         )
         max_amp = max_amp_ref
         logger.info(
-            f"Scale test diurnal cycle amplitude to max of reference ({max_amp_ref}) mm/day"
+            f"Scale test diurnal cycle amplitude to max of reference ({max_amp_ref}) {units}"
         )
     else:
         if specified_max_amp != 0:
@@ -90,7 +90,7 @@ def plot_panel(n, fig, proj, var, amp, amp_ref, title, parameter):
         img = np.dstack(
             ((var / 24 - 0.5) % 1, (amp / max_amp) ** 0.5, np.ones_like(amp))
         )
-        logger.info(f"Scale test diurnal cycle amplitude to specified {max_amp} mm/day")
+        logger.info(f"Scale test diurnal cycle amplitude to specified {max_amp} {units}")
     # Note: hsv_to_rgb would clipping input data to the valid range for imshow with RGB data ([0..1]
     img = hsv_to_rgb(img)
 
@@ -210,7 +210,7 @@ def plot_panel(n, fig, proj, var, amp, amp_ref, title, parameter):
     bar_ax.text(
         -0.1,
         -0.9,
-        "Max DC amp {:.2f}{}".format(amp.max(), "mm/d"),
+        "Max DC amp {:.2f}{}".format(amp.max(), units),
         transform=bar_ax.transAxes,
         fontsize=7,
         fontweight="bold",
@@ -244,6 +244,7 @@ def plot(test_tmax, test_amp, ref_tmax, ref_amp, parameter):
     # Create figure, projection
     fig = plt.figure(figsize=[8.5, 8.5], dpi=parameter.dpi)
     proj = ccrs.PlateCarree(central_longitude=180)
+    units = variable%units #"J/kg"
 
     # First panel
     plot_panel(
@@ -254,7 +255,7 @@ def plot(test_tmax, test_amp, ref_tmax, ref_amp, parameter):
         test_amp,
         ref_amp,
         (parameter.test_name_yrs, parameter.test_title),
-        parameter,
+        parameter,units,
     )
 
     # Second panel
@@ -266,7 +267,7 @@ def plot(test_tmax, test_amp, ref_tmax, ref_amp, parameter):
         ref_amp,
         ref_amp,
         (parameter.ref_name_yrs, parameter.reference_title),
-        parameter,
+        parameter,units,
     )
 
     # Figure title
