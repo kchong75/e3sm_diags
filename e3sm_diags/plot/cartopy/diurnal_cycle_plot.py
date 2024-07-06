@@ -244,7 +244,7 @@ def plot(test_tmax, test_amp, ref_tmax, ref_amp, parameter):
     # Create figure, projection
     fig = plt.figure(figsize=[8.5, 8.5], dpi=parameter.dpi)
     proj = ccrs.PlateCarree(central_longitude=180)
-    units = variable%units #"J/kg"
+    units = test_amp.units
 
     # First panel
     plot_panel(
