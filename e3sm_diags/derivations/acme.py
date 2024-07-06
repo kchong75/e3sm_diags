@@ -226,6 +226,28 @@ def pminuse_convert_units(var):
     return var
 
 
+def scale_dcape(var):
+    """change rate of Convectively available potential energy"""
+    var = var*3600
+    var.units = "J/kg/hr"
+    var.long_name = "change rate of Convectively available potential energy [DCAPE*3600]"
+    return var
+
+def scale_zmdq(var):
+    """Q tendency - Zhang-McFarlane moist convection"""
+    var = var*3600*1000
+    var.units = "g/kg/hr"
+    var.long_name = "Q tendency - Zhang-McFarlane moist convection"
+    return var
+
+def scale_zmdt(var):
+    """T tendency - Zhang-McFarlane moist convection"""
+    var = var*3600
+    var.units = "K/hr"
+    var.long_name = "T tendency - Zhang-McFarlane moist convection"
+    return var
+
+
 def prect(precc, precl):
     """Total precipitation flux = convective + large-scale"""
     var = precc + precl
@@ -1149,6 +1171,30 @@ derived_variables = {
     "CLDMED": OrderedDict(
         [(("CLDMED",), lambda cldmed: convert_units(cldmed, target_units="%"))]
     ),
+    "CONCLD": OrderedDict(
+        [(("CONCLD",), lambda x: convert_units(x, target_units="%"))]
+    ),
+    "FREQZM": OrderedDict(
+        [(("FREQZM",), lambda x: convert_units(x, target_units="%"))]
+    ),
+    "ZMDT": OrderedDict(
+        [(("ZMDT",), lambda x: scale_zmdt(x))]
+    ),
+    "ZMDQ": OrderedDict(
+        [(("ZMDQ",), lambda x: scale_zmdq(x))]
+    ),
+    "CAPE/DCAPE": OrderedDict(
+        [(("CAPE_ZM","DCAPE"), lambda cape,dcape: cape/dcape )]
+    ),
+    "CAPE_ZM": OrderedDict(
+        [(("CAPE_ZM",), rename )]
+    ),
+    "DCAPE": OrderedDict(
+        [
+            (("DCAPE",), lambda x: scale_dcape(x)),
+        ]
+
+    ),
     "CLDTOT": OrderedDict(
         [
             (("clt",), rename),
@@ -1546,6 +1592,14 @@ derived_variables = {
             ),
         ]
     ),
+    "PRECCDZM": OrderedDict(
+        [
+            (
+                ("PRECCDZM",),
+                lambda x: convert_units(rename(x), target_units="mm/day"),
+            ),
+        ]
+    ),
     "PRECC": OrderedDict(
         [
             (
@@ -1575,9 +1629,19 @@ derived_variables = {
             (("surf_mom_flux_V",), lambda tauv: -tauv),  # EAMxx
         ]
     ),
-    "CLDICE": OrderedDict([(("cli",), rename)]),
+    "CLDICE": OrderedDict(
+        [
+            (("cli",), rename),
+            (("CLDICE",),rename),
+        ]
+    ),
     "TGCLDIWP": OrderedDict([(("clivi",), rename)]),
-    "CLDLIQ": OrderedDict([(("clw",), rename)]),
+    "CLDLIQ": OrderedDict(
+        [
+            (("clw",), rename),
+            (("CLDLIQ"), rename),
+        ]
+    ),
     "TGCLDCWP": OrderedDict([(("clwvi",), rename)]),
     "O3": OrderedDict([(("o3",), rename)]),
     "PminusE": OrderedDict(
